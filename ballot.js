@@ -14,11 +14,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- $("#voter").on("change",function(){
-     if(this.value==-1){
-         
-     }else{
-         
-     }
- });
+
+$("#voter").on("change", function () {
+    var data = {"id": this.value};
+    $.post("/postUser.php", data);
+});
+
+$("#submit").click(function (e) {
+    e.preventDefault();
+    if (validateBallot()) {
+
+    } else {
+        alert("Something is wrong with your ballot. Please ensure that (1) \n\
+you have voted on every restaurant and (2) you did not give two different \n\
+restaurants the same rank.");
+    }
+})
+
+var validateBallot = function () {
+    var selects;
+    $("#ballot").each(function () {
+        selects = $(this).find(':input'); //<-- Should return all input elements in that specific form.
+    });
+    var rankings = [];
+    for (var a = 0; a < selects.length; a++) {
+        rankings[a] = selects[a].selectedIndex;
+        if(rankings[a] === 0){
+            return false;
+        }
+    }
+    if (containsDuplicates(rankings)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+var containsDuplicates = function (a) {
+    var counts = [];
+    for (var i = 0; i <= a.length; i++) {
+        if (counts[a[i]] === undefined) {
+            counts[a[i]] = 1;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}

@@ -20,7 +20,8 @@
     var d = new Date();
 	switch (d.getDay()) {
 		case 0: //Sunday
-		displaySubmit();
+		//displaySubmit();
+                displayBallot();
 		break;
 		case 1: //Monday
 		displaySubmit();

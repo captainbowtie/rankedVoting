@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2017 allen
  *
@@ -35,14 +36,40 @@ $selectHTML = "<select id='voter'>
     <option value='10'>Joseph</option>
 </select>\n";
 
-if (!isset($_SESSION['id'])) {
-    $selectHTML = str_replace("'".$_SESSION['id']."'", $_SESSION['id']."' selected", $selectHTML);
+if (isset($_SESSION['id'])) {
+    $selectHTML = str_replace("'" . $_SESSION['id'] . "'", "'" . $_SESSION['id'] . "' selected", $selectHTML);
 }
 
 echo $selectHTML;
 
 echo "<form id='ballot'>\n";
+echo "<ul>\n";
 //TODO: procedurally generate ballot
-echo "    <input type='submit' id='submit' value='Vote'>\n";
+//TODO: List restaurants that have already been submitted
+$query = "SELECT * FROM restaurants";
+$connection = new mysqli(dbhost, dbuser, dbpass, dbname);
+$result = $connection->query($query);
+$connection->close();
+
+$rankHTML = [];
+for ($a = 0; $a < $result->num_rows; $a++) {
+    $rankHTML[$a] = "   <select id='restaurant" . $a . "'>
+        <option value='-1'>--</option>\n";
+    for ($b = 0; $b < $result->num_rows; $b++) {
+        $bUp = $b + 1;
+        $rankHTML[$a] = $rankHTML[$a]."     <option value='$b'>$bUp</option>\n";
+    }
+    $rankHTML[$a] = $rankHTML[$a]." </select>\n";
+}
+
+
+for ($a = 0; $a < $result->num_rows; $a++) {
+    $result->data_seek($a);
+    $restaurant = $result->fetch_array(MYSQLI_NUM);
+    echo "  <li title='" . $restaurant[2] . "'>" . $restaurant[1] . ": \n".$rankHTML[$a]."</li>\n";
+}
+
+echo "</ul>\n";
 echo "</form>\n";
+echo "    <input type='submit' id='submit' value='Vote'>\n";
 echo "<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>\n<script src='ballot.js'></script>";

@@ -1,6 +1,7 @@
 <?php
-/*
- * Copyright (C) 2017 allen
+
+/* 
+ * Copyright (C) 2018 allen
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,17 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once "dblogin.php";
-echo<<<_END
-<!DOCTYPE html>
-    <html>
-        <head>
-            <title>Database Setup</title>
-        </head>
-    <body>
-    <div id=bodyDiv></div>
-    <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
-    <script src='index.js'></script>
-    </body>
-</html>
-_END;
+session_start();
+
+if(strlen($_POST['id'])>0){
+    echo $_POST['id'];
+    $_SESSION['id'] = $_POST['id'];
+}
