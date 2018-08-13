@@ -23,5 +23,16 @@
       alert("Error: description must be less than 140 characters long");
      }else{
       //AJAX to submit
+      var data = {
+          "n":$("#name").val(),
+          "d":$("#description").val()};
+      console.log(data);
+      $.post("postRestaurant.php",data,function(r){
+          if(r==0){
+              location.reload();
+          }else{
+              alert("Something went wrong. Try again or contact the developer.");
+          }
+      });
      }
  })

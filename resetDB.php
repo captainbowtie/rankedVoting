@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2017 allen
  *
@@ -15,16 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- if($_POST["resetPW"]=="password"){
+
+if ($_POST["resetPW"] == "password") {
     require_once "dblogin.php";
     $dropRestaurants = "DROP TABLE restaurants";
     $dropVotes = "DROP TABLE votes";
     $voteTable = "CREATE TABLE votes(id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT KEY, " //Vote Table
-        . "user TINYINT UNSIGNED NOT NULL, restaurant UNSIGNED NOT NULL) ENGINE InnoDB";
-    $restaurantTable = "CREATE TABLE restaurants(id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT KEY, " //Restaurant Table
-        . "name VARCHAR(64) NOT NULL, description VARCHAR(140) NOT NULL) ENGINE InnoDB";
-        //TODO: connect to database, drop tables, create new ones
- }else{
-     echo "Error: Incorrect Reset Password";
- }
+            . "user TINYINT UNSIGNED NOT NULL, restaurant UNSIGNED NOT NULL) ENGINE InnoDB";
+    $restaurantTable = "
+        CREATE TABLE restaurants(
+            id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT KEY,
+            name VARCHAR(64) NOT NULL,
+            description VARCHAR(140) NOT NULL
+        ) ENGINE InnoDB
+";
+    //TODO: connect to database, drop tables, create new ones
+} else {
+    echo "Error: Incorrect Reset Password";
+}

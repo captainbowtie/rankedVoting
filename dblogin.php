@@ -12,7 +12,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-define("dbhost","localhost");
+define("dbhost","127.0.0.1");
 define("dbname","rankedVoting");
-define("dbuser","user");
+define("dbuser","test");
 define("dbpass","password");

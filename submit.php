@@ -18,15 +18,30 @@
 
 require_once "dblogin.php";
     //TODO: List restaurants that have already been submitted
+    $query = "SELECT * FROM restaurants";
+    $connection = new mysqli(dbhost, dbuser, dbpass, dbname);
+    $result = $connection->query($query);
+    $connection->close();
+    for ($a = 0; $a < $result->num_rows; $a++) {
+        if($a == 0){
+            echo "Already submitted restaurants for this week:\n<ul>";
+        }
+        $result->data_seek($a);
+        $restaurant = $result->fetch_array(MYSQLI_NUM);
+        echo "<li>".$restaurant[1].": ".$restaurant[2]."</li>\n";
+        if($a == ($teamResult->num_rows)-1){
+            echo "</ul>\n";
+        }
+    }
+
 echo<<<_END
         <form>
-            Name: <input id="name">
+            Restaurant Name: <input id="name">
             <br>
             Description (140 characters): <textarea id="description">Put your description here</textarea>
             <br>
             <input type="submit" id="submit" value="Submit">
         </form>
-        <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
         <script src='submit.js'></script>
 _END;
 
