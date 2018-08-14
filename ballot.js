@@ -23,7 +23,23 @@ $("#voter").on("change", function () {
 $("#submit").click(function (e) {
     e.preventDefault();
     if (validateBallot()) {
+        
+        //convert votes to JSON object
+        var selects;
+        $("#ballot").each(function () {
+            selects = $(this).find(':input'); //<-- Should return all input elements in that specific form.
+        });
+        var votes = [];
+        for(var a = 0;a<selects.length;a++){
+            votes[a] = selects[a].selectedIndex;
+        }
 
+        var data = {
+            "u": $("#voter").val(),
+            "v": votes
+        };
+        
+        $.post("postBallot.php", data, function () {});
     } else {
         alert("Something is wrong with your ballot. Please ensure that (1) \n\
 you have voted on every restaurant and (2) you did not give two different \n\
@@ -39,7 +55,7 @@ var validateBallot = function () {
     var rankings = [];
     for (var a = 0; a < selects.length; a++) {
         rankings[a] = selects[a].selectedIndex;
-        if(rankings[a] === 0){
+        if (rankings[a] === 0) {
             return false;
         }
     }

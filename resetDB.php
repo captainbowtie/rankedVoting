@@ -21,8 +21,9 @@ if ($_POST["resetPW"] == "password") {
     require_once "dblogin.php";
     $dropRestaurants = "DROP TABLE restaurants";
     $dropVotes = "DROP TABLE votes";
-    $voteTable = "CREATE TABLE votes(id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT KEY, " //Vote Table
-            . "user TINYINT UNSIGNED NOT NULL, restaurant UNSIGNED NOT NULL) ENGINE InnoDB";
+    $voteTable = "CREATE TABLE votes(id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT KEY, " //Vote Table
+            . "user TINYINT UNSIGNED NOT NULL, restaurant TINYINT UNSIGNED NOT NULL, "
+            . "rank TINYINT UNSIGNED NOT NULL) ENGINE InnoDB";
     $restaurantTable = "
         CREATE TABLE restaurants(
             id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT KEY,
