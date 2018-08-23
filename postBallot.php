@@ -26,13 +26,17 @@ if ($_SESSION['id'] != $_POST['u']) {
     //connect to database
     require_once "dblogin.php";
     $connection = new mysqli(dbhost, dbuser, dbpass, dbname);
+    
+    //delete users past votes, if they exist
+    $deleteQuery = "DELETE FROM votes WHERE user=".$_SESSION['id'];
+    $result = $connection->query($deleteQuery);
 
     //write votes to database
     for ($a = 0; $a < sizeOf($_POST['v']); $a++) {
         $vote = sanitize_string($_POST['v'][$a]);
-        $query = "INSERT INTO votes (user,restaurant,rank) "
+        $writeQuery = "INSERT INTO votes (user,restaurant,rank) "
                 . "VALUES(" . $_SESSION['id'] . ",$a,$vote)";
-        $result = $connection->query($query);
+        $result = $connection->query($writeQuery);
     }
 
     //close connection and notify of success
