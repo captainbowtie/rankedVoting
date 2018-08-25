@@ -47,9 +47,9 @@ echo "<ul>\n";
 //TODO: procedurally generate ballot
 //TODO: List restaurants that have already been submitted
 $restaurantsQuery = "SELECT * FROM restaurants";
+$pastVotesQuery = "SELECT * FROM votes WHERE user=". $_SESSION['id']." ORDER BY restaurant";
 $connection = new mysqli(dbhost, dbuser, dbpass, dbname);
 $restaurantsResult = $connection->query($restaurantsQuery);
-$pastVotesQuery = "SELECT * FROM votes WHERE user=". $_SESSION['id']." ORDER BY restaurant";
 $voteResult = $connection->query($pastVotesQuery);
 $connection->close();
 
