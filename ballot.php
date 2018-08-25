@@ -1,5 +1,5 @@
 <?php
-
+$err = "\n";
 /*
  * Copyright (C) 2017 allen
  *
@@ -46,26 +46,37 @@ echo "<form id='ballot'>\n";
 echo "<ul>\n";
 //TODO: procedurally generate ballot
 //TODO: List restaurants that have already been submitted
-$query = "SELECT * FROM restaurants";
+$restaurantsQuery = "SELECT * FROM restaurants";
 $connection = new mysqli(dbhost, dbuser, dbpass, dbname);
-$result = $connection->query($query);
+$restaurantsResult = $connection->query($restaurantsQuery);
+$pastVotesQuery = "SELECT * FROM votes WHERE user=". $_SESSION['id']." ORDER BY restaurant";
+$voteResult = $connection->query($pastVotesQuery);
 $connection->close();
 
+//Create the selects for each restaurant's ranking
 $rankHTML = [];
-for ($a = 0; $a < $result->num_rows; $a++) {
+for ($a = 0; $a < $restaurantsResult->num_rows; $a++) {
     $rankHTML[$a] = "   <select id='restaurant" . $a . "'>
         <option value='-1'>--</option>\n";
-    for ($b = 0; $b < $result->num_rows; $b++) {
+    for ($b = 0; $b < $restaurantsResult->num_rows; $b++) {
         $bUp = $b + 1;
         $rankHTML[$a] = $rankHTML[$a]."     <option value='$b'>$bUp</option>\n";
     }
     $rankHTML[$a] = $rankHTML[$a]." </select>\n";
 }
 
+//make prior votes appear
+for($a = 0;$a<sizeof($rankHTML);$a++){
+    $voteResult->data_seek($a);
+    $vote = $voteResult->fetch_array(MYSQLI_NUM);
+    $rankMinusOne = $vote[3] - 1;
+    $rankHTML[$a] = str_replace("'$rankMinusOne'","'$rankMinusOne' selected",$rankHTML[$a]);
+}
 
-for ($a = 0; $a < $result->num_rows; $a++) {
-    $result->data_seek($a);
-    $restaurant = $result->fetch_array(MYSQLI_NUM);
+
+for ($a = 0; $a < $restaurantsResult->num_rows; $a++) {
+    $restaurantsResult->data_seek($a);
+    $restaurant = $restaurantsResult->fetch_array(MYSQLI_NUM);
     echo "  <li title='" . $restaurant[2] . "'>" . $restaurant[1] . ": \n".$rankHTML[$a]."</li>\n";
 }
 
@@ -73,3 +84,4 @@ echo "</ul>\n";
 echo "</form>\n";
 echo "    <input type='submit' id='submit' value='Vote'>\n";
 echo "<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>\n<script src='ballot.js'></script>";
+echo $err;
