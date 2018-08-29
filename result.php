@@ -22,8 +22,10 @@ echo "<div id='resultDiv'></div>\n";
 
 //get vote data
 $voteQuery = "SELECT * FROM votes ORDER BY restaurant";
+$restaurantQuery = "SELECT * FROM restaurants";
 $connection = new mysqli(dbhost, dbuser, dbpass, dbname);
 $voteResult = $connection->query($voteQuery);
+$restaurantResult = $connection->query($restaurantQuery);
 $connection->close();
 
 //create array of vote data
@@ -33,10 +35,19 @@ for($a = 0;$a<$voteResult->num_rows;$a++){
     $votes[$a] = $voteResult->fetch_array(MYSQLI_ASSOC);
 }
 
-//echo vote data as json
-echo "<script>";
-echo "var votes=".json_encode($votes).";";
-echo "</script>";
+//create array of restaurant data
+$restaurants = [];
+for($a = 0;$a<$restaurantResult->num_rows;$a++){
+    $restaurantResult->data_seek($a);
+    $restaurants[$a] = $restaurantResult->fetch_array(MYSQLI_ASSOC);
+}
+
+//echo vote and restaurant data as json
+echo "<script>\n";
+echo "var votes=".json_encode($votes).";\n";
+echo "var restaurants=".json_encode($restaurants).";\n";
+echo "</script>\n";
 
 //echo controling script
+echo "<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>\n";
 echo "<script src='result.js'></script>";

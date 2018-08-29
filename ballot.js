@@ -31,7 +31,7 @@ $("#submit").click(function (e) {
         });
         var votes = [];
         for(var a = 0;a<selects.length;a++){
-            votes[a] = selects[a].selectedIndex;
+            votes[selects[a].id.substring(10)] = selects[a].selectedIndex;
         }
 
         var data = {
