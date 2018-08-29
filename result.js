@@ -33,11 +33,11 @@ var winner = -1;
 console.log(votes);
 
 while (winner === -1) {
-    
+
     //Initialize array to count first ranks
     var firstRanks = [];
     for (var a = 0; a < numRestaurants; a++) {
-        firstRanks[a] = 0;
+        firstRanks[restaurants[a]["id"]] = 0;
     }
 
     //Count the number of first rank votes each restaurant received
@@ -46,11 +46,17 @@ while (winner === -1) {
             firstRanks[votes[a]["restaurant"]]++;
         }
     }
-console.log(firstRanks);
+
+    //Display results
+    for (var a = 0; a < firstRanks.length; a++) {
+        if (firstRanks[a] > 0) {
+            console.log(getRestaurantById(a) + ": " + firstRanks[a]);
+        }
+    }
 
     //initialize variables to hold eliminated restaurant's info, if elimination is necessary
     var loser = {
-        "restaurant": [-1],
+        "restaurant": [],
         "votes": Number.MAX_SAFE_INTEGER
     };
 
@@ -62,21 +68,66 @@ console.log(firstRanks);
         }
         //In same loop, find the lowest ones to remove if more voing is necessary
         if (firstRanks[a] <= loser.votes) {
-            //if lower than previos lowest, reset the array of losers
+            //if lower than previous lowest, reset the array of losers
             if (firstRanks[a] < loser.votes) {
-                loser.restaurant = [-1];
+                loser.restaurant = [];
                 loser.votes = firstRanks[a];
             }
             //Regardless of reset, then push the resturant in question onto the array
             loser.restaurant.push(firstRanks[a]);
         }
     }
-    
-    //If there isn't a winner, remove the lowest ranked restaurant(s)
-    if(winner === -1){
-        
+
+    //If there isn't a winner, remove the restaurant(s) with lease 1st place votes
+    if (winner === -1) {
+        //Get a list of all voters
+        var voterIds = [];
+        for (var a = 0; a < votes.length; a++) {
+            if (voterIds.indexOf(votes[a]["user"]) == -1) {
+                voterIds.push(votes[a]["user"]);
+            }
+        }
+
+        //Remove vote for loser(s) and shift the rest upwards
+        for (var a = 0; a < loser.restaurant.length; a++) {
+            
+            //for each person that voted, find where they ranked each loser
+            for (var b = 0; b < voterIds.length; b++) {
+               
+                //For each vote, check if it is the correct user and for a loser
+                //If so, note how that user ranked it
+                var loserRank = -1;
+                for (var c = votes.length - 1; c >= 0; c--) {
+                    if(votes[c]["restaurant"]==loser.restaurant[a] &&
+                            votes[c]["user"] == voterIds[b]){
+                        loserRank = votes[c]["rank"];
+                        //Remove the losing vote
+                        votes.splice(c,1);
+                        //Because we've found the vote in question, we can cut the loop short
+                        c = 0;
+                    }
+                }
+                
+                //After having removed the losing vote, adjust all upward accordingly
+                for(var c = 0;c<votes.length;c++){
+                    if(votes[c]["user"]==voterIds[b] &&
+                            votes[c]["rank"]>loserRank){
+                        votes[c]["rank"]--;
+                    }
+                }
+            }
+        }
     }
 }
 
-console.log(restaurants);
-console.log(restaurants[winner]);
+console.log(getRestaurantById(winner));
+
+function getRestaurantById(id) {
+    var name;
+    for (var a = 0; a < restaurants.length; a++) {
+        if (id == restaurants[a]["id"]) {
+            name = restaurants[a]["name"];
+        }
+    }
+    return name;
+}
